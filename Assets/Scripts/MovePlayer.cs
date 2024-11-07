@@ -4,7 +4,7 @@ public class MovePlayer : MonoBehaviour
 {
     private float _speed;
     public float walkspeed = 500f;
-    public float runspeed = 1000f;
+    public float runspeed = 800f;
 
     private float _stamina = 100f;
     public float _staminaspeed = 2f;
@@ -21,8 +21,8 @@ public class MovePlayer : MonoBehaviour
     
     private void FixedUpdate() 
     {
-        // Check movement direction and speed
-        CheckDir();
+        // Check movement speed
+        CheckSpeed();
 
         // Calculate movement input
         float h = Input.GetAxis("Horizontal") * _speed * Time.fixedDeltaTime;
@@ -51,15 +51,16 @@ public class MovePlayer : MonoBehaviour
         Debug.Log(_stamina);
     }
 
-    void OnCollisionStay()
+    void OnCollisionStay(Collision other)
     {
-        isGrounded = true;
+        if (other.gameObject.tag == "Ground")
+            isGrounded = true;
     }
 
-    private void CheckDir() // Check direction & speed of move
+    private void CheckSpeed() // Check speed of move
     {
         // Adjust speed and stamina based on run/walk condition
-        if (Input.GetKey(KeyCode.LeftShift) && isGrounded && _stamina > 1)
+        if (Input.GetKey(KeyCode.LeftShift) && _stamina > 1)
         {
             _speed = runspeed;
             _stamina -= _staminaspeed * Time.deltaTime;
