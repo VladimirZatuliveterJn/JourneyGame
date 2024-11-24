@@ -10,6 +10,10 @@ public class MovePlayer : MonoBehaviour
     public float _staminaspeed = 2f;
     private bool _canRest; // Can increase stamina
 
+    private float _health = 100f;
+    private float _damage = 10f;
+    private float _punch_delay = 1f;
+
     bool isGrounded;
     public float JumpForce = 200f;
     private Rigidbody Rb;
@@ -48,11 +52,19 @@ public class MovePlayer : MonoBehaviour
                 _stamina = 100f;
         }
 
-        Debug.Log(_stamina);
+        // Dead if has health less than zero
+        if (_health <= 0)
+            Destroy(this.gameObject);
+
+        Debug.Log("stamina: " + _stamina);
+        Debug.Log("health: " + _health);
     }
 
     void OnCollisionStay(Collision other)
     {
+        if (other.gameObject.tag == "Danger")
+            Invoke("Damage", _punch_delay);
+
         if (other.gameObject.tag == "Ground")
             isGrounded = true;
     }
@@ -71,6 +83,11 @@ public class MovePlayer : MonoBehaviour
             _speed = walkspeed;
             _canRest = true;
         }
+    }
+
+    void Damage()
+    {
+        _health =- _damage;
     }
 }
 
